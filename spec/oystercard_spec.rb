@@ -1,6 +1,8 @@
 require 'oystercard'
 
 describe Oystercard do
+let(:station) {'a station'}
+let(:entry_station) {double :station}
 
   describe "#new card" do
 
@@ -36,17 +38,26 @@ describe Oystercard do
   end
 
   describe "#touch-in" do
+    # let(:station){ double :station }
     it "should change in-journey to true" do
       subject.top_up(5)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject.in_journey?).to eq true
     end
+
+    # let(:station){ double :station }
+    it 'stores the entry station' do
+      subject.top_up(5)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
+end
+
   end
 
   describe "#touch-out" do
     it "should change in-journey back to false" do
-      subject.top_up(5)
-      subject.touch_in
+      # subject.top_up(5)
+      # subject.touch_in(station)
       subject.touch_out
       expect(subject.in_journey?).to eq false
     end
@@ -57,7 +68,8 @@ describe Oystercard do
 
   describe "#insufficient funds" do
     it "Gives an error if insufficient funds on card when touch-in" do
-      expect{ subject.touch_in }.to raise_error("Insufficient funds")
+      allow(subject).to receive(:balance).and_return(0)
+      expect{ subject.touch_in(station) }.to raise_error("Insufficient funds")
     end
   end
 
