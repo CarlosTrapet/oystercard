@@ -9,7 +9,6 @@ let(:exit_station) { double :station }
 #   card.top_up(50)
 #   card_with_balance
 # end
-let(:example_journey) { {:entry => entry_station, :exit => exit_station} }
 
 
   describe "#initialize" do
@@ -19,20 +18,6 @@ let(:example_journey) { {:entry => entry_station, :exit => exit_station} }
     end
 
 
-  end
-
-  describe "#journey_history" do
-
-    it "starts as empty" do
-    expect(card.journey_history).to match_array([])
-  end
-
-    it "stores a completed journey" do
-      card.top_up(50)
-      card.touch_in(entry_station)
-      card.touch_out(exit_station)
-      expect(card.journey_history).to include(example_journey)
-    end
   end
 
   describe "#top-up" do
