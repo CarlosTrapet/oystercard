@@ -55,15 +55,25 @@ end
   end
 
   describe "#touch-out" do
+
+    it { is_expected.to respond_to(:touch_out).with(1).argument }
     it "should change in-journey back to false" do
       # subject.top_up(5)
       # subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.in_journey?).to eq false
     end
     it "should deduct from card when touched out" do
-      expect { subject.touch_out }.to change{ subject.balance }.by(-2)
+      expect { subject.touch_out(station) }.to change{ subject.balance }.by(-2)
     end
+
+    it 'stores the exit station' do
+      subject.top_up(5)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.exit_station).to eq station
+    end
+
   end
 
   describe "#insufficient funds" do
