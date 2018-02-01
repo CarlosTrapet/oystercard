@@ -32,9 +32,12 @@ class Oystercard
     @balance -= 2
     # @entry_station = nil
     @exit_station = station
-    @journey_history << { :entry => @entry_station, :exit => @exit_station }
+    store_journey
   end
 
+  def store_journey
+    @journey_history << { :entry => @entry_station, :exit => @exit_station }
+  end
 
   private
   def deduct(amount)
