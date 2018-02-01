@@ -3,13 +3,33 @@ require 'oystercard'
 describe Oystercard do
 let(:station) {'a station'}
 let(:entry_station) {double :station}
+let(:exit_station) { double :station }
+let(:card_with_balance) do 
+  subject.top_up(50)
+  card_with_balance
+end
+let(:example_journey) { {:entry => entry_station, :exit => exit_station} }
 
-  describe "#new card" do
+
+  describe "#initialize" do
 
     it "should have a default balance of #{Oystercard::DEFAULT_BALANCE}" do
       expect(subject.balance).to eq Oystercard::DEFAULT_BALANCE
     end
 
+
+  end
+
+  describe "#journey_history" do 
+
+    it "starts as empty" do 
+    expect(subject.journey_history).to match_array([])
+  end
+
+    it "stores a completed journey" do 
+      card_with_balance.touch_out(exit_station)
+      expect(card_with_balance.journey_history).to include(example_journey)
+    end
   end
 
   describe "#top-up" do
@@ -23,13 +43,6 @@ let(:entry_station) {double :station}
     end
   end
 
-  # describe "#deduct" do
-  #
-  #   it "should deduct oyster bt n amount" do
-  #     expect{ subject.deduct(5) }.to change{ subject.balance }.by(-5)
-  #   end
-  # end
-
   describe "#in_journey?" do
 
     it "should be false at start" do
@@ -38,14 +51,13 @@ let(:entry_station) {double :station}
   end
 
   describe "#touch-in" do
-    # let(:station){ double :station }
+
     it "should change in-journey to true" do
       subject.top_up(5)
       subject.touch_in(station)
       expect(subject.in_journey?).to eq true
     end
 
-    # let(:station){ double :station }
     it 'stores the entry station' do
       subject.top_up(5)
       subject.touch_in(station)
@@ -58,8 +70,6 @@ end
 
     it { is_expected.to respond_to(:touch_out).with(1).argument }
     it "should change in-journey back to false" do
-      # subject.top_up(5)
-      # subject.touch_in(station)
       subject.touch_out(station)
       expect(subject.in_journey?).to eq false
     end
