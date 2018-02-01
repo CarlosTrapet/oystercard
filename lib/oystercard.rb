@@ -1,15 +1,17 @@
+require_relative 'journey'
+
 class Oystercard
 
   DEFAULT_BALANCE = 0
   MAXIMUM_LIMIT = 90
   MINIMUM_LIMIT = 1
 
-  attr_reader :balance, :entry_station, :exit_station
+  attr_reader :balance, :entry_station, :exit_station, :journey
 
   def initialize(balance = DEFAULT_BALANCE)
     @balance = balance
     @in_journey = false
-    # @entry_station
+    @journey
   end
 
   def top_up(amount)
@@ -23,7 +25,7 @@ class Oystercard
 
   def touch_in(station)
     fail "Insufficient funds" if balance < MINIMUM_LIMIT
-    Journey.new(station)
+    @journey = Journey.new(entry_station = station)
   end
 
   def touch_out(station)
@@ -31,7 +33,8 @@ class Oystercard
     @balance -= 2
     # @entry_station = nil
     @exit_station = station
-    # store_journey
+    @journey.exit_station = station
+    @journey.store_journey
   end
 
   private
