@@ -6,6 +6,7 @@ let(:station) {'a station'}
 let(:entry_station) {double :station}
 let(:exit_station) { double :station }
 let(:minimum_fare) { 2 }
+let(:penalty_fare) { 6 }
 # let(:card_with_balance) do
 #   card.top_up(50)
 #   card_with_balance
@@ -32,34 +33,46 @@ let(:minimum_fare) { 2 }
     end
   end
 
-  describe "#touch-in" do
-
-    # it 'stores the entry station' do
-    #   card.top_up(5)
-    #   card.touch_in(station)
-    #   expect(card.entry_station).to eq station
-    # end
-
-  end
-
-  describe "#touch-out" do
-    before do 
+  context 'card is topped up and touched in' do
+    before do
       card.top_up(10)
       card.touch_in(entry_station)
     end
 
-    it "should deduct from card when touched out" do
-      card.touch_in(entry_station)
-      expect { card.touch_out(station) }.to change{ card.balance }.by(-minimum_fare)
+    describe "#touch-in" do
+
+      it 'deducts a penalty fare if the previous journey is incomplete' do
+
+        expect { card.touch_in(entry_station) }.to change { card.balance }.by(-penalty_fare)
+      end
+
+      # it 'stores the entry station' do
+      #   card.top_up(5)
+      #   card.touch_in(station)
+      #   expect(card.entry_station).to eq station
+      # end
+
     end
 
-    it 'stores the journey details' do
-      current_journey = { :entry => entry_station, :exit => exit_station }
-      card.touch_out(exit_station)
-      expect(card.history).to include(current_journey)
+    describe "#touch-out" do
+
+      it "should deduct from card when touched out" do
+        card.touch_in(entry_station)
+        expect { card.touch_out(station) }.to change{ card.balance }.by(-minimum_fare)
+      end
+
+      it 'stores the journey details' do
+        current_journey = { :entry => entry_station, :exit => exit_station }
+        card.touch_out(exit_station)
+        #  do something to read details
+        expect(card.history).to include(current_journey)
+      end
+
     end
 
   end
+
+
 
   describe "#insufficient funds" do
     it "Gives an error if insufficient funds on card when touch-in" do
