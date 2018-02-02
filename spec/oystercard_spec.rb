@@ -31,41 +31,23 @@ let(:exit_station) { double :station }
     end
   end
 
-  describe "#in_journey?" do
-
-    it "should be false at start" do
-      expect(card.in_journey?). to eq false
-    end
-  end
-
   describe "#touch-in" do
 
-    it "should change in-journey to true" do
-      card.top_up(5)
-      card.touch_in(station)
-      expect(card.in_journey?).to eq true
-    end
-
-    it 'stores the entry station' do
-      card.top_up(5)
-      card.touch_in(station)
-      expect(card.entry_station).to eq station
-end
+    # it 'stores the entry station' do
+    #   card.top_up(5)
+    #   card.touch_in(station)
+    #   expect(card.entry_station).to eq station
+    # end
 
   end
 
   describe "#touch-out" do
 
-    it { is_expected.to respond_to(:touch_out).with(1).argument }
-    it "should change in-journey back to false" do
-      card.touch_out(station)
-      expect(card.in_journey?).to eq false
-    end
     it "should deduct from card when touched out" do
       expect { card.touch_out(station) }.to change{ card.balance }.by(-2)
     end
 
-    it 'stores the exit station' do
+    it 'stores the journey details' do
       current_journey = { :entry => entry_station, :exit => exit_station }
       card.top_up(5)
       card.touch_in(entry_station)
