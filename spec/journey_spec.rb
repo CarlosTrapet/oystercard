@@ -25,4 +25,28 @@ describe Journey do
     end
   end
 
+  describe '#complete?' do
+    it 'returns false for a journey with no exit_station' do 
+      journey.entry_station = entry_station
+      expect(journey).not_to be_complete
+    end
+    it 'returns true for a journey with entry and exit stations' do 
+      journey.entry_station = entry_station
+      journey.exit_station = exit_station
+      expect(journey).to be_complete
+    end
+  end
+
+  describe '#fare' do 
+    before do 
+      journey.exit_station = exit_station
+    end
+    it 'returns minimum fare for a complete journey' do 
+      journey.entry_station = entry_station
+      expect(journey.fare).to eq described_class::MINIMUM_FARE
+    end
+    it "returns penalty fare for an incomplete journey" do 
+      expect(journey.fare).to eq described_class::PENALTY_FARE
+    end
+  end
 end

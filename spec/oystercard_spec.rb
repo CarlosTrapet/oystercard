@@ -5,6 +5,7 @@ subject(:card) {described_class.new}
 let(:station) {'a station'}
 let(:entry_station) {double :station}
 let(:exit_station) { double :station }
+let(:minimum_fare) { 2 }
 # let(:card_with_balance) do
 #   card.top_up(50)
 #   card_with_balance
@@ -42,15 +43,18 @@ let(:exit_station) { double :station }
   end
 
   describe "#touch-out" do
+    before do 
+      card.top_up(10)
+      card.touch_in(entry_station)
+    end
 
     it "should deduct from card when touched out" do
-      expect { card.touch_out(station) }.to change{ card.balance }.by(-2)
+      card.touch_in(entry_station)
+      expect { card.touch_out(station) }.to change{ card.balance }.by(-minimum_fare)
     end
 
     it 'stores the journey details' do
       current_journey = { :entry => entry_station, :exit => exit_station }
-      card.top_up(5)
-      card.touch_in(entry_station)
       card.touch_out(exit_station)
       expect(card.history).to include(current_journey)
     end

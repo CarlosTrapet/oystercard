@@ -37,7 +37,7 @@ class Oystercard
     end
     @journey.exit_station = station
     @journey.update_details
-    @balance -= 2
+    @balance -= @journey.fare
     # @entry_station = nil
     # @exit_station = station
     # @journey.exit_station = station
