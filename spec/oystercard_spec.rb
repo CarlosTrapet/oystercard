@@ -66,10 +66,11 @@ end
     end
 
     it 'stores the exit station' do
+      current_journey = { :entry => entry_station, :exit => exit_station }
       card.top_up(5)
-      card.touch_in(station)
-      card.touch_out(station)
-      expect(card.exit_station).to eq station
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.history).to include(current_journey)
     end
 
   end
