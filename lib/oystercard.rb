@@ -28,7 +28,7 @@ class Oystercard
     fail "Insufficient funds" if balance < MINIMUM_LIMIT
 
     if !@history.empty?
-      self.deduct(@history.last.fare) unless !@history.last.complete?
+      deduct(@history.last.fare) unless @history.last.complete? || @history.last.paid
     end
     @journey = Journey.new(entry_station = station)
     @journey.update_details
@@ -42,7 +42,7 @@ class Oystercard
     end
     @journey.exit_station = station
     @journey.update_details
-    @balance -= @journey.fare
+    deduct(@journey.fare)
     # @entry_station = nil
     # @exit_station = station
     # @journey.exit_station = station
@@ -51,8 +51,8 @@ class Oystercard
 
   private
   def deduct(amount)
-    # deduct with no argument, calculate journey.fare
     @balance -= amount
+    @journey.paid = true
   end
 
 

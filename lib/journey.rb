@@ -2,7 +2,7 @@ require_relative 'oystercard'
 
 class Journey
 
-  attr_accessor :entry_station, :exit_station
+  attr_accessor :entry_station, :exit_station, :paid
   attr_reader :details
 
   MINIMUM_FARE = 2
@@ -12,6 +12,7 @@ class Journey
     @entry_station = entry_station
     @exit_station = exit_station
     @details = {}
+    @paid = false
   end
 
   def update_details

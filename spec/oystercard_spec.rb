@@ -46,17 +46,16 @@ let(:penalty_fare) { 6 }
         expect { card.touch_in(entry_station) }.to change { card.balance }.by(-penalty_fare)
       end
 
-      # it 'stores the entry station' do
-      #   card.top_up(5)
-      #   card.touch_in(station)
-      #   expect(card.entry_station).to eq station
-      # end
-
+      it 'does not deduct a penalty fare that has already been paid' do 
+        card.touch_out(exit_station)
+        card.touch_out(exit_station)
+        expect { card.touch_in(entry_station) }.not_to change { card.balance }
+      end
     end
 
     describe "#touch-out" do
 
-      it "should deduct from card when touched out" do
+      it 'should deduct from card when touched out' do
         card.touch_in(entry_station)
         expect { card.touch_out(station) }.to change{ card.balance }.by(-minimum_fare)
       end
@@ -64,10 +63,13 @@ let(:penalty_fare) { 6 }
       it 'stores the journey details' do
         current_journey = { :entry => entry_station, :exit => exit_station }
         card.touch_out(exit_station)
-        #  do something to read details
-        expect(card.history).to include(current_journey)
+        expect(card.history.last.details).to include(current_journey)
       end
 
+      it 'should change journey to paid = true' do 
+        card.touch_out(exit_station)
+        expect(card.history.last.paid).to eq true
+      end
     end
 
   end
