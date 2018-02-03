@@ -27,9 +27,3 @@ To run the programme, use the below command in irb:
 ### Development Process
 
 TBC
-
-## Author
-
-Noel Vock
-Ben Challenor
-Josué Estévez Fernández
